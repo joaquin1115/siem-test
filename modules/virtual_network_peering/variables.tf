@@ -1,0 +1,6 @@
+variable "resource_group_name" { type = string }
+variable "virtual_network_name" { type = string }
+variable "virtual_network_id" { type = string }
+variable "peer_vnet_ids" {
+  type = list(string)
+}
