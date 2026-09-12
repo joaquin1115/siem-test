@@ -1,0 +1,9 @@
+variable "name" { type = string }
+variable "location" { type = string }
+variable "resource_group_name" { type = string }
+variable "subnet_id" { type = string }
+variable "frontend_name" { type = string }
+variable "backend_pool_name" { type = string }
+variable "probe_name" { type = string }
+variable "rule_name" { type = string }
+variable "tags" { type = map(string) }

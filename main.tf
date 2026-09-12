@@ -1,41 +1,85 @@
-resource "azurerm_resource_group" "siem" {
+module "resource_group" {
+  source = "./modules/resource_group"
+
   name     = var.resource_group_name
   location = var.location
   tags     = var.tags
 }
 
-module "network" {
-  source = "./modules/network"
+module "virtual_network" {
+  source = "./modules/virtual_network"
 
-  resource_group_name              = azurerm_resource_group.siem.name
-  location                         = azurerm_resource_group.siem.location
-  vnet_name                        = var.vnet_name
-  vnet_address_space               = var.vnet_address_space
-  subnet_name                      = var.subnet_name
-  subnet_address_prefixes          = var.subnet_address_prefixes
-  network_security_group_name      = var.network_security_group_name
-  route_table_name                 = var.route_table_name
-  default_route_name               = var.default_route_name
-  firewall_private_ip              = var.firewall_private_ip
-  load_balancer_name               = var.load_balancer_name
-  load_balancer_frontend_name      = var.load_balancer_frontend_name
-  load_balancer_backend_pool_name  = var.load_balancer_backend_pool_name
-  load_balancer_probe_name         = var.load_balancer_probe_name
-  load_balancer_rule_name          = var.load_balancer_rule_name
-  peer_vnets                       = var.peer_vnets
-  tags                             = var.tags
+  name                = var.vnet_name
+  location            = module.resource_group.location
+  resource_group_name = module.resource_group.name
+  address_space       = var.vnet_address_space
+  tags                = var.tags
 }
 
-module "compute" {
-  source = "./modules/compute"
+module "network_security_group" {
+  source = "./modules/network_security_group"
 
-  resource_group_name = azurerm_resource_group.siem.name
-  location            = azurerm_resource_group.siem.location
-  subnet_id           = module.network.subnet_id
-  backend_pool_id     = module.network.backend_pool_id
-  collectors                              = var.collectors
-  network_interface_ip_configuration_name = var.network_interface_ip_configuration_name
-  admin_username      = var.admin_username
-  admin_password      = var.admin_password
+  name                = var.network_security_group_name
+  location            = module.resource_group.location
+  resource_group_name = module.resource_group.name
   tags                = var.tags
+}
+
+module "route_table" {
+  source = "./modules/route_table"
+
+  name                = var.route_table_name
+  location            = module.resource_group.location
+  resource_group_name = module.resource_group.name
+  default_route_name  = var.default_route_name
+  firewall_private_ip = var.firewall_private_ip
+  tags                = var.tags
+}
+
+module "subnet" {
+  source = "./modules/subnet"
+
+  name                      = var.subnet_name
+  resource_group_name       = module.resource_group.name
+  virtual_network_name      = module.virtual_network.name
+  address_prefixes          = var.subnet_address_prefixes
+  network_security_group_id = module.network_security_group.id
+  route_table_id            = module.route_table.id
+}
+
+module "load_balancer" {
+  source = "./modules/load_balancer"
+
+  name                = var.load_balancer_name
+  location            = module.resource_group.location
+  resource_group_name = module.resource_group.name
+  subnet_id           = module.subnet.id
+  frontend_name       = var.load_balancer_frontend_name
+  backend_pool_name   = var.load_balancer_backend_pool_name
+  probe_name          = var.load_balancer_probe_name
+  rule_name           = var.load_balancer_rule_name
+  tags                = var.tags
+}
+
+module "virtual_machine" {
+  source = "./modules/virtual_machine"
+
+  resource_group_name                     = module.resource_group.name
+  location                                = module.resource_group.location
+  subnet_id                               = module.subnet.id
+  backend_pool_id                         = module.load_balancer.backend_pool_id
+  network_interface_ip_configuration_name = var.network_interface_ip_configuration_name
+  collectors                              = var.collectors
+  admin_username                          = var.admin_username
+  admin_password                          = var.admin_password
+  tags                                    = var.tags
+}
+
+module "virtual_network_peering" {
+  source = "./modules/virtual_network_peering"
+
+  resource_group_name = module.resource_group.name
+  virtual_network_name = module.virtual_network.name
+  virtual_network_id   = module.virtual_network.id
+  peer_vnets           = var.peer_vnets
 }
