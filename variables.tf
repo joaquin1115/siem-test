@@ -87,11 +87,6 @@ variable "peer_vnets" {
     resource_group_name = string
     subscription_id     = string
   }))
-
-  validation {
-    condition     = length(var.peer_vnets) == 10
-    error_message = "Se deben configurar exactamente diez VNets remotas para los peerings."
-  }
 }
 
 variable "network_interface_ip_configuration_name" {
