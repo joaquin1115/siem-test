@@ -18,10 +18,22 @@ load_balancer_probe_name        = "bindplane-tcp-51401"
 load_balancer_rule_name                  = "bindplane-tcp-51401"
 network_interface_ip_configuration_name = "internal"
 
-peer_vnet_ids = [
-  "/subscriptions/3254a23b-4426-4b2e-ad13-45e4bf4bdbbd/resourceGroups/rg-test-vnet/providers/Microsoft.Network/virtualNetworks/vnet-test-01",
-  "/subscriptions/3254a23b-4426-4b2e-ad13-45e4bf4bdbbd/resourceGroups/rg-test-vnet/providers/Microsoft.Network/virtualNetworks/vnet-test-02",
-  "/subscriptions/3254a23b-4426-4b2e-ad13-45e4bf4bdbbd/resourceGroups/rg-test-vnet/providers/Microsoft.Network/virtualNetworks/vnet-test-03",
+peer_vnets = [
+  {
+    name                = "vnet-test-01"
+    resource_group_name = "rg-test-vnet"
+    subscription_id     = "3254a23b-4426-4b2e-ad13-45e4bf4bdbbd"
+  },
+  {
+    name                = "vnet-test-02"
+    resource_group_name = "rg-test-vnet"
+    subscription_id     = "3254a23b-4426-4b2e-ad13-45e4bf4bdbbd"
+  },
+  {
+    name                = "vnet-test-03"
+    resource_group_name = "rg-test-vnet"
+    subscription_id     = "3254a23b-4426-4b2e-ad13-45e4bf4bdbbd"
+  },
 ]
 
 collectors = {

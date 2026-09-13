@@ -80,9 +80,18 @@ variable "load_balancer_rule_name" {
   type        = string
 }
 
-variable "peer_vnet_ids" {
-  description = "Lista de IDs de las VNets remotas para los peerings bidireccionales."
-  type        = list(string)
+variable "peer_vnets" {
+  description = "Lista de VNets remotas y sus suscripciones para los peerings bidireccionales."
+  type = list(object({
+    name                = string
+    resource_group_name = string
+    subscription_id     = string
+  }))
+
+  validation {
+    condition     = length(var.peer_vnets) == 3
+    error_message = "Se deben configurar exactamente tres VNets remotas para los peerings."
+  }
 }
 
 variable "network_interface_ip_configuration_name" {
