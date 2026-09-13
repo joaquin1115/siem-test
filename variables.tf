@@ -89,8 +89,8 @@ variable "peer_vnets" {
   }))
 
   validation {
-    condition     = length(var.peer_vnets) == 3
-    error_message = "Se deben configurar exactamente tres VNets remotas para los peerings."
+    condition     = length(var.peer_vnets) == 10
+    error_message = "Se deben configurar exactamente diez VNets remotas para los peerings."
   }
 }
 

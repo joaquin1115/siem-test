@@ -30,9 +30,9 @@ Configure además el siguiente **GitHub Actions secret**:
 |---|---|
 | `ARM_CLIENT_SECRET` | Client secret del service principal usado por Azure y el backend AzureRM. |
 
-Las credenciales del administrador de las VMs están definidas en `environments/production.tfvars`, conforme a la configuración solicitada. El service principal necesita permisos **Contributor** sobre el grupo de recursos SIEM y sobre los grupos de recursos de las tres VNets remotas, incluso cuando estén en otras suscripciones (para los peerings recíprocos). También necesita **Storage Blob Data Contributor** sobre el contenedor de estado. El storage account, contenedor y grupo de recursos del backend deben existir antes de ejecutar el pipeline.
+Las credenciales del administrador de las VMs están definidas en `environments/production.tfvars`, conforme a la configuración solicitada. El service principal necesita permisos **Contributor** sobre el grupo de recursos SIEM y sobre los grupos de recursos de las diez VNets remotas, incluso cuando estén en otras suscripciones (para los peerings recíprocos). También necesita **Storage Blob Data Contributor** sobre el contenedor de estado. El storage account, contenedor y grupo de recursos del backend deben existir antes de ejecutar el pipeline.
 
-La lista `peer_vnets` contiene exactamente tres objetos con `name`, `resource_group_name` y `subscription_id`. Cada VNet se consulta con un bloque `data` usando un proveedor AzureRM aliasado para su suscripción; por ello el service principal debe tener permisos en cada suscripción remota. Para agregar una cuarta VNet se debe declarar un proveedor aliasado y una invocación de módulo adicionales.
+La lista `peer_vnets` contiene exactamente diez objetos con `name`, `resource_group_name` y `subscription_id`. Cada VNet se consulta con un bloque `data` usando un proveedor AzureRM aliasado para su suscripción; por ello el service principal debe tener permisos en cada suscripción remota. Los diez elementos actuales son mockups y deben reemplazarse por las VNets reales antes de ejecutar el pipeline. Para agregar una VNet adicional se debe declarar un proveedor aliasado y una invocación de módulo adicionales.
 
 ## Ejecución local
 

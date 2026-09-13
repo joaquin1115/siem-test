@@ -83,11 +83,11 @@ module "virtual_network_peering_01" {
     azurerm.remote = azurerm.peer_vnet_01
   }
 
-  local_resource_group_name    = module.resource_group.name
-  local_virtual_network_name   = module.virtual_network.name
-  local_virtual_network_id     = module.virtual_network.id
-  remote_resource_group_name   = var.peer_vnets[0].resource_group_name
-  remote_virtual_network_name  = var.peer_vnets[0].name
+  local_resource_group_name   = module.resource_group.name
+  local_virtual_network_name  = module.virtual_network.name
+  local_virtual_network_id    = module.virtual_network.id
+  remote_resource_group_name  = var.peer_vnets[0].resource_group_name
+  remote_virtual_network_name = var.peer_vnets[0].name
 }
 
 module "virtual_network_peering_02" {
@@ -98,11 +98,11 @@ module "virtual_network_peering_02" {
     azurerm.remote = azurerm.peer_vnet_02
   }
 
-  local_resource_group_name    = module.resource_group.name
-  local_virtual_network_name   = module.virtual_network.name
-  local_virtual_network_id     = module.virtual_network.id
-  remote_resource_group_name   = var.peer_vnets[1].resource_group_name
-  remote_virtual_network_name  = var.peer_vnets[1].name
+  local_resource_group_name   = module.resource_group.name
+  local_virtual_network_name  = module.virtual_network.name
+  local_virtual_network_id    = module.virtual_network.id
+  remote_resource_group_name  = var.peer_vnets[1].resource_group_name
+  remote_virtual_network_name = var.peer_vnets[1].name
 }
 
 module "virtual_network_peering_03" {
@@ -113,9 +113,114 @@ module "virtual_network_peering_03" {
     azurerm.remote = azurerm.peer_vnet_03
   }
 
-  local_resource_group_name    = module.resource_group.name
-  local_virtual_network_name   = module.virtual_network.name
-  local_virtual_network_id     = module.virtual_network.id
-  remote_resource_group_name   = var.peer_vnets[2].resource_group_name
-  remote_virtual_network_name  = var.peer_vnets[2].name
+  local_resource_group_name   = module.resource_group.name
+  local_virtual_network_name  = module.virtual_network.name
+  local_virtual_network_id    = module.virtual_network.id
+  remote_resource_group_name  = var.peer_vnets[2].resource_group_name
+  remote_virtual_network_name = var.peer_vnets[2].name
+}
+
+module "virtual_network_peering_04" {
+  source = "./modules/virtual_network_peering"
+
+  providers = {
+    azurerm.local  = azurerm
+    azurerm.remote = azurerm.peer_vnet_04
+  }
+
+  local_resource_group_name   = module.resource_group.name
+  local_virtual_network_name  = module.virtual_network.name
+  local_virtual_network_id    = module.virtual_network.id
+  remote_resource_group_name  = var.peer_vnets[3].resource_group_name
+  remote_virtual_network_name = var.peer_vnets[3].name
+}
+
+module "virtual_network_peering_05" {
+  source = "./modules/virtual_network_peering"
+
+  providers = {
+    azurerm.local  = azurerm
+    azurerm.remote = azurerm.peer_vnet_05
+  }
+
+  local_resource_group_name   = module.resource_group.name
+  local_virtual_network_name  = module.virtual_network.name
+  local_virtual_network_id    = module.virtual_network.id
+  remote_resource_group_name  = var.peer_vnets[4].resource_group_name
+  remote_virtual_network_name = var.peer_vnets[4].name
+}
+
+module "virtual_network_peering_06" {
+  source = "./modules/virtual_network_peering"
+
+  providers = {
+    azurerm.local  = azurerm
+    azurerm.remote = azurerm.peer_vnet_06
+  }
+
+  local_resource_group_name   = module.resource_group.name
+  local_virtual_network_name  = module.virtual_network.name
+  local_virtual_network_id    = module.virtual_network.id
+  remote_resource_group_name  = var.peer_vnets[5].resource_group_name
+  remote_virtual_network_name = var.peer_vnets[5].name
+}
+
+module "virtual_network_peering_07" {
+  source = "./modules/virtual_network_peering"
+
+  providers = {
+    azurerm.local  = azurerm
+    azurerm.remote = azurerm.peer_vnet_07
+  }
+
+  local_resource_group_name   = module.resource_group.name
+  local_virtual_network_name  = module.virtual_network.name
+  local_virtual_network_id    = module.virtual_network.id
+  remote_resource_group_name  = var.peer_vnets[6].resource_group_name
+  remote_virtual_network_name = var.peer_vnets[6].name
+}
+
+module "virtual_network_peering_08" {
+  source = "./modules/virtual_network_peering"
+
+  providers = {
+    azurerm.local  = azurerm
+    azurerm.remote = azurerm.peer_vnet_08
+  }
+
+  local_resource_group_name   = module.resource_group.name
+  local_virtual_network_name  = module.virtual_network.name
+  local_virtual_network_id    = module.virtual_network.id
+  remote_resource_group_name  = var.peer_vnets[7].resource_group_name
+  remote_virtual_network_name = var.peer_vnets[7].name
+}
+
+module "virtual_network_peering_09" {
+  source = "./modules/virtual_network_peering"
+
+  providers = {
+    azurerm.local  = azurerm
+    azurerm.remote = azurerm.peer_vnet_09
+  }
+
+  local_resource_group_name   = module.resource_group.name
+  local_virtual_network_name  = module.virtual_network.name
+  local_virtual_network_id    = module.virtual_network.id
+  remote_resource_group_name  = var.peer_vnets[8].resource_group_name
+  remote_virtual_network_name = var.peer_vnets[8].name
+}
+
+module "virtual_network_peering_10" {
+  source = "./modules/virtual_network_peering"
+
+  providers = {
+    azurerm.local  = azurerm
+    azurerm.remote = azurerm.peer_vnet_10
+  }
+
+  local_resource_group_name   = module.resource_group.name
+  local_virtual_network_name  = module.virtual_network.name
+  local_virtual_network_id    = module.virtual_network.id
+  remote_resource_group_name  = var.peer_vnets[9].resource_group_name
+  remote_virtual_network_name = var.peer_vnets[9].name
 }
