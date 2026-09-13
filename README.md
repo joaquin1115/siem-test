@@ -7,7 +7,7 @@ Este proyecto aprovisiona en **East US 2** el grupo de recursos `RSGR-TDI-PR-SIE
 - `main.tf`: crea el grupo de recursos e invoca los módulos.
 - `modules/resource_group`, `modules/virtual_network`, `modules/network_security_group`, `modules/route_table` y `modules/subnet`: módulos independientes para el grupo de recursos y cada componente de red.
 - `modules/load_balancer`, `modules/virtual_machine` y `modules/virtual_network_peering`: módulos independientes para el balanceador, los collectors y los peerings.
-- `environments/production.tfvars`: parámetros de producción, incluidos todos los nombres de recursos y las credenciales de administración solicitadas.
+- `environments/production.tfvars`: parámetros de producción, incluidos todos los nombres de recursos, la lista de VNets (nombre, resource group y suscripción) para los peerings y las credenciales de administración solicitadas.
 - `.github/workflows/terraform.yml`: fases `plan` y `apply` con backend remoto AzureRM y autenticación mediante client ID/client secret.
 
 ## Variables que se deben configurar en GitHub
@@ -30,7 +30,9 @@ Configure además el siguiente **GitHub Actions secret**:
 |---|---|
 | `ARM_CLIENT_SECRET` | Client secret del service principal usado por Azure y el backend AzureRM. |
 
-Las credenciales del administrador de las VMs están definidas en `environments/production.tfvars`, conforme a la configuración solicitada. El service principal necesita permisos **Contributor** sobre el grupo de recursos SIEM y los grupos de recursos de las tres VNets remotas (para los peerings recíprocos). También necesita **Storage Blob Data Contributor** sobre el contenedor de estado. El storage account, contenedor y grupo de recursos del backend deben existir antes de ejecutar el pipeline.
+Las credenciales del administrador de las VMs están definidas en `environments/production.tfvars`, conforme a la configuración solicitada. El service principal necesita permisos **Contributor** sobre el grupo de recursos SIEM y sobre los grupos de recursos de las diez VNets remotas, incluso cuando estén en otras suscripciones (para los peerings recíprocos). También necesita **Storage Blob Data Contributor** sobre el contenedor de estado. El storage account, contenedor y grupo de recursos del backend deben existir antes de ejecutar el pipeline.
+
+La lista `peer_vnets` contiene exactamente diez objetos con `name`, `resource_group_name` y `subscription_id`. Cada VNet se consulta con un bloque `data` usando un proveedor AzureRM aliasado para su suscripción; por ello el service principal debe tener permisos en cada suscripción remota. Los diez elementos actuales son mockups y deben reemplazarse por las VNets reales antes de ejecutar el pipeline. Para agregar una VNet adicional se debe declarar un proveedor aliasado y una invocación de módulo adicionales.
 
 ## Ejecución local
 

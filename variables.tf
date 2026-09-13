@@ -81,12 +81,17 @@ variable "load_balancer_rule_name" {
 }
 
 variable "peer_vnets" {
-  description = "VNets remotas y datos necesarios para crear ambos extremos del peering."
-  type = map(object({
+  description = "Lista de VNets remotas y sus suscripciones para los peerings bidireccionales."
+  type = list(object({
     name                = string
     resource_group_name = string
-    id                  = string
+    subscription_id     = string
   }))
+
+  validation {
+    condition     = length(var.peer_vnets) == 10
+    error_message = "Se deben configurar exactamente diez VNets remotas para los peerings."
+  }
 }
 
 variable "network_interface_ip_configuration_name" {
