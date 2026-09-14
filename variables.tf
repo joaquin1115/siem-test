@@ -123,11 +123,4 @@ variable "admin_password" {
 variable "tags" {
   description = "Etiquetas comunes para todos los recursos."
   type        = map(string)
-  default = {
-    application_name = "SIEM"
-    approver_name    = "deyvisward@credicorpcapital.com"
-    business_unit    = "TI"
-    proyecto         = "SIEM"
-    ambiente         = "PR"
-  }
 }
