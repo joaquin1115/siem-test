@@ -76,13 +76,13 @@ collectors = {
     vm_name       = "AZVM-PR-SIEM-EU2-COM-001"
     nic_name      = "ANIC-PR-SIEM-EU2-COM-001"
     os_disk_name  = "DISK-PR-SIEM-EU2-COM-001"
-    computer_name = "SIEMCOL01"
+    computer_name = "PRSIEMEU2COM001"
   }
   collector_02 = {
     vm_name       = "AZVM-PR-SIEM-EU2-COM-002"
     nic_name      = "ANIC-PR-SIEM-EU2-COM-002"
     os_disk_name  = "DISK-PR-SIEM-EU2-COM-002"
-    computer_name = "SIEMCOL02"
+    computer_name = "PRSIEMEU2COM002"
   }
 }
 
