@@ -52,7 +52,6 @@ collectors = {
 }
 
 admin_username = "useradmvm"
-admin_password = "C4p1t4l2026$$"
 
 tags = {
   application_name = "SIEM"

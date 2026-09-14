@@ -109,17 +109,6 @@ variable "admin_username" {
   sensitive   = true
 }
 
-variable "admin_password" {
-  description = "Contraseña del administrador local de las máquinas Windows."
-  type        = string
-  sensitive   = true
-
-  validation {
-    condition     = length(var.admin_password) >= 12
-    error_message = "La contraseña debe tener al menos 12 caracteres."
-  }
-}
-
 variable "tags" {
   description = "Etiquetas comunes para todos los recursos."
   type        = map(string)
