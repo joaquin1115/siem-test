@@ -16,25 +16,33 @@ concurrency:
 
 env:
   TF_IN_AUTOMATION: "true"
-  ARM_CLIENT_ID: ${{ vars.ARM_CLIENT_ID }}
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-  ARM_TENANT_ID: ${{ vars.ARM_TENANT_ID }}
-  ARM_SUBSCRIPTION_ID: ${{ vars.ARM_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
 jobs:
   plan:
     name: Plan
     runs-on: ubuntu-latest
     environment: production
+
     outputs:
       apply_allowed: ${{ steps.gate.outputs.apply_allowed }}
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v3
-      - uses: azure/login@v2
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Azure Login
+        uses: azure/login@v2
         with:
           creds: >-
-            {"clientId":"${{ vars.ARM_CLIENT_ID }}","clientSecret":"${{ secrets.ARM_CLIENT_SECRET }}","subscriptionId":"${{ vars.ARM_SUBSCRIPTION_ID }}","tenantId":"${{ vars.ARM_TENANT_ID }}"}
+            {"clientId":"${{ secrets.ARM_CLIENT_ID }}","clientSecret":"${{ secrets.ARM_CLIENT_SECRET }}","subscriptionId":"${{ secrets.ARM_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.ARM_TENANT_ID }}"}
+
       - name: Terraform init
         run: |
           terraform init -input=false \
@@ -42,22 +50,31 @@ jobs:
             -backend-config="storage_account_name=${{ vars.TFSTATE_STORAGE_ACCOUNT }}" \
             -backend-config="container_name=${{ vars.TFSTATE_CONTAINER }}" \
             -backend-config="key=${{ vars.TFSTATE_KEY }}" \
-            -backend-config="subscription_id=${{ vars.ARM_SUBSCRIPTION_ID }}" \
-            -backend-config="tenant_id=${{ vars.ARM_TENANT_ID }}" \
-            -backend-config="client_id=${{ vars.ARM_CLIENT_ID }}"
+            -backend-config="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
+            -backend-config="tenant_id=${{ secrets.ARM_TENANT_ID }}" \
+            -backend-config="client_id=${{ secrets.ARM_CLIENT_ID }}"
+
       - name: Terraform validate
         run: terraform validate
+
       - name: Terraform plan
-        run: terraform plan -input=false -var-file=environments/production.tfvars -out=tfplan
+        run: |
+          terraform plan \
+            -input=false \
+            -var-file=environments/production.tfvars \
+            -out=tfplan
+
       - name: Upload plan
         uses: actions/upload-artifact@v4
         with:
           name: production-tfplan
           path: tfplan
           if-no-files-found: error
-      - id: gate
-        name: Enable apply only for main branch push or manual run
-        run: echo "apply_allowed=${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}" >> "$GITHUB_OUTPUT"
+
+      - name: Enable apply only for push or manual run
+        id: gate
+        run: |
+          echo "apply_allowed=${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}" >> "$GITHUB_OUTPUT"
 
   apply:
     name: Apply
@@ -65,13 +82,20 @@ jobs:
     if: needs.plan.outputs.apply_allowed == 'true'
     runs-on: ubuntu-latest
     environment: production
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v3
-      - uses: azure/login@v2
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Azure Login
+        uses: azure/login@v2
         with:
           creds: >-
-            {"clientId":"${{ vars.ARM_CLIENT_ID }}","clientSecret":"${{ secrets.ARM_CLIENT_SECRET }}","subscriptionId":"${{ vars.ARM_SUBSCRIPTION_ID }}","tenantId":"${{ vars.ARM_TENANT_ID }}"}
+            {"clientId":"${{ secrets.ARM_CLIENT_ID }}","clientSecret":"${{ secrets.ARM_CLIENT_SECRET }}","subscriptionId":"${{ secrets.ARM_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.ARM_TENANT_ID }}"}
+
       - name: Terraform init
         run: |
           terraform init -input=false \
@@ -79,11 +103,14 @@ jobs:
             -backend-config="storage_account_name=${{ vars.TFSTATE_STORAGE_ACCOUNT }}" \
             -backend-config="container_name=${{ vars.TFSTATE_CONTAINER }}" \
             -backend-config="key=${{ vars.TFSTATE_KEY }}" \
-            -backend-config="subscription_id=${{ vars.ARM_SUBSCRIPTION_ID }}" \
-            -backend-config="tenant_id=${{ vars.ARM_TENANT_ID }}" \
-            -backend-config="client_id=${{ vars.ARM_CLIENT_ID }}"
-      - uses: actions/download-artifact@v4
+            -backend-config="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
+            -backend-config="tenant_id=${{ secrets.ARM_TENANT_ID }}" \
+            -backend-config="client_id=${{ secrets.ARM_CLIENT_ID }}"
+
+      - name: Download plan
+        uses: actions/download-artifact@v4
         with:
           name: production-tfplan
+
       - name: Terraform apply
         run: terraform apply -input=false tfplan
