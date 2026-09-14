@@ -61,6 +61,14 @@ module "load_balancer" {
   tags                = var.tags
 }
 
+resource "random_password" "admin" {
+  length  = 20
+  special = true
+
+  # Limit special characters to values accepted by Azure Windows VMs.
+  override_special = "!@#%^*-_+"
+}
+
 module "virtual_machine" {
   source = "./modules/virtual_machine"
 
@@ -71,7 +79,7 @@ module "virtual_machine" {
   network_interface_ip_configuration_name = var.network_interface_ip_configuration_name
   collectors                              = var.collectors
   admin_username                          = var.admin_username
-  admin_password                          = var.admin_password
+  admin_password                          = random_password.admin.result
   tags                                    = var.tags
 }
 

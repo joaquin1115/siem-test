@@ -49,4 +49,9 @@ resource "azurerm_windows_virtual_machine" "this" {
     sku       = "2022-datacenter-azure-edition"
     version   = "latest"
   }
+
+  # Preserve password changes performed outside Terraform after VM creation.
+  lifecycle {
+    ignore_changes = [admin_password]
+  }
 }
