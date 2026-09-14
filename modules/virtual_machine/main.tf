@@ -28,7 +28,7 @@ resource "azurerm_windows_virtual_machine" "this" {
   computer_name       = each.value.computer_name
   location            = var.location
   resource_group_name = var.resource_group_name
-  size                = "Standard_D4lds_v5"
+  size                = "Standard_D4lds_v6"
   admin_username      = var.admin_username
   admin_password      = var.admin_password
   network_interface_ids = [
